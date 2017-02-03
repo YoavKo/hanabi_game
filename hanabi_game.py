@@ -3,6 +3,7 @@ from pprint import pprint
 
 NUMBER_OF_PLAYERS = 3
 NUMBER_OF_CARDS = 5
+poz ={'c':0,'n':1}
 def deck_generate():
     deck = []
     colors = ["B", "R", "G", "Y", "W"] 
@@ -20,6 +21,36 @@ def deck_generate():
 
     return deck
 
+def removeNegativeData(clue):
+    p, n = clue.split("_")
+    switch p.len():
+        case 2:
+            n = ""
+
+        case 1:
+            if p.isdigit():
+                for part in n:
+                    if part.isdigit():
+                        n = n.replace(part, "")
+
+            else: # p is color
+                for part in n:
+                    if not part.isdigit():
+                        n = n.replace(part, "")
+
+    return p + "_" + n
+
+def sortClue(clue):
+    pass
+
+def rearrangeClue(clue):
+    '''
+    clue = removeNegativeData(clue,)
+    clue = sortClue(clue)
+    return clue
+    '''
+    pass
+
 deck = deck_generate()
 shuffle(deck)
 
@@ -28,22 +59,28 @@ for player in xrange(NUMBER_OF_PLAYERS):
     players.append({'Cards' : [], 'Clues' : [],})
     for card in xrange(NUMBER_OF_CARDS):
         players[player]['Cards'].append(deck.pop())
-        players[player]['Clues'].append("")
+        players[player]['Clues'].append("_")
 
-#pprint(players[1:])
 #pprint(deck)
-
 def print_bord():
     pprint(players[1:])
 
-poz ={'c':0,'n':1}
-
 while True:
     print_bord()
+
     cmd = raw_input("Enter clue:[player,card,n/c]")
     cmd = cmd.split(",")
     pprint(cmd)
-    data = players[int(cmd[0])]['Cards'][int(cmd[1])][poz[cmd[2]]]
+    player_num, card_num,type_data = cmd
+    data = players[int(player_num)]['Cards'][int(card_num)][poz[type_data]]
+
     for card in players[int(cmd[0])]['Cards']:
-        if data in card:
-            print card
+        index = players[int(cmd[0])]['Cards'].index(card)
+        clue = players[int(cmd[0])]['Clues'][index]
+        if data not in clue:
+            if data in card:
+                print card
+                players[int(cmd[0])]['Clues'][index] = data + clue
+            else:
+                players[int(cmd[0])]['Clues'][index] = clue + data
+
