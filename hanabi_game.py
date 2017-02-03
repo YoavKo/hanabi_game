@@ -3,7 +3,7 @@ from pprint import pprint
 
 NUMBER_OF_PLAYERS = 3
 NUMBER_OF_CARDS = 5
-poz ={'c':0,'n':1}
+poz ={'c':1,'n':0}
 def deck_generate():
     deck = []
     colors = ["B", "R", "G", "Y", "W"] 
@@ -17,39 +17,35 @@ def deck_generate():
     for color in colors:
         for number in numbers:
             for i in xrange(number[1]):
-                deck.append(color+number[0])
+                deck.append(number[0]+color)
 
     return deck
 
 def removeNegativeData(clue):
     p, n = clue.split("_")
-    switch p.len():
-        case 2:
-            n = ""
+    if len(p) == 2:
+        n = ""
+    elif len(p) == 1:
+        if p.isdigit():
+            for part in n:
+                if part.isdigit():
+                    n = n.replace(part, "")
 
-        case 1:
-            if p.isdigit():
-                for part in n:
-                    if part.isdigit():
-                        n = n.replace(part, "")
-
-            else: # p is color
-                for part in n:
-                    if not part.isdigit():
-                        n = n.replace(part, "")
+        else: # p is color
+            for part in n:
+                if not part.isdigit():
+                    n = n.replace(part, "")
 
     return p + "_" + n
 
 def sortClue(clue):
-    pass
+    p, n = clue.split("_")
+    return "".join(sorted(p)) + "_" + "".join(sorted(n))
 
 def rearrangeClue(clue):
-    '''
-    clue = removeNegativeData(clue,)
+    clue = removeNegativeData(clue)
     clue = sortClue(clue)
     return clue
-    '''
-    pass
 
 deck = deck_generate()
 shuffle(deck)
@@ -80,7 +76,8 @@ while True:
         if data not in clue:
             if data in card:
                 print card
-                players[int(cmd[0])]['Clues'][index] = data + clue
+                players[int(cmd[0])]['Clues'][index] = rearrangeClue(data + clue)
             else:
-                players[int(cmd[0])]['Clues'][index] = clue + data
+                players[int(cmd[0])]['Clues'][index] = rearrangeClue(clue + data)
+            
 
