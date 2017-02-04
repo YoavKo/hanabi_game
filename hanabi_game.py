@@ -4,10 +4,12 @@ from pprint import pprint
 NUMBER_OF_PLAYERS = 3
 NUMBER_OF_CARDS = 5
 poz ={'c':1,'n':0}
+
 def deck_generate():
     deck = []
     colors = ["B", "R", "G", "Y", "W"] 
-                            # "B"=blue, "R"=red, "G"=green, "Y"=yeloow, "W"=white
+             # "B"=blue, "R"=red, "G"=green, "Y"=yeloow, "W"=white
+
     numbers =  [["1", 3],   #[label, quantity]
                 ["2", 2],
                 ["3", 2],
@@ -22,9 +24,10 @@ def deck_generate():
     return deck
 
 def removeNegativeData(clue):
-    p, n = clue.split("_")
+    p, n = clue.split("_") # posetive & negavit parts of the clue
     if len(p) == 2:
         n = ""
+
     elif len(p) == 1:
         if p.isdigit():
             for part in n:
@@ -39,7 +42,7 @@ def removeNegativeData(clue):
     return p + "_" + n
 
 def sortClue(clue):
-    p, n = clue.split("_")
+    p, n = clue.split("_")  # posetive & negavit parts of the clue
     return "".join(sorted(p)) + "_" + "".join(sorted(n))
 
 def rearrangeClue(clue):
@@ -68,16 +71,20 @@ while True:
     cmd = cmd.split(",")
     pprint(cmd)
     player_num, card_num,type_data = cmd
-    data = players[int(player_num)]['Cards'][int(card_num)][poz[type_data]]
+    player_num = int(player_num)
+    card_num = int(card_num)
+    player = players[player_num]
+    data = player['Cards'][card_num][poz[type_data]]
 
-    for card in players[int(cmd[0])]['Cards']:
-        index = players[int(cmd[0])]['Cards'].index(card)
-        clue = players[int(cmd[0])]['Clues'][index]
+    for card in player['Cards']:
+        index = player['Cards'].index(card)
+        clue = player['Clues'][index]
         if data not in clue:
             if data in card:
                 print card
-                players[int(cmd[0])]['Clues'][index] = rearrangeClue(data + clue)
+                player['Clues'][index] = rearrangeClue(data + clue)
+
             else:
-                players[int(cmd[0])]['Clues'][index] = rearrangeClue(clue + data)
+                player['Clues'][index] = rearrangeClue(clue + data)
             
 
